@@ -15,7 +15,7 @@ So this small script may be used to help blind people navigating the web.
 
 *Note: Using the tabindex attribute isn't sufficient, if there is any dynamic content, otherwise it will do.*
 
-###The idea
+###The idea###
 
 Ok, lets say, we have HTML containers with child elements, that are dynamically created. 
 Why not creating invisible crossovers between them, that may point even to completely remote containers?
@@ -52,7 +52,7 @@ SHIFT+TAB and press ENTER to get where she wants.
 
 **Note: of course those waccess-elements are not visible.**
 
-###Special events
+###Special events###
 
 Sometimes it is useful to declaratively focus a desired element. Just think of a pagination, think 
 of the user "clicks" "page 3" from the pagination below a result list. Wouldn't it be nice to focus 
