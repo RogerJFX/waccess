@@ -63,9 +63,8 @@ $waccess = window.$waccess || {};
 		}
 	}
 	
-	function scanDocument4ACS() {
-		const acsBranches = document.querySelectorAll('waccess');
-		acsBranches.forEach((ab) => {
+	function scanDocument4Waccess() {
+		document.querySelectorAll('waccess').forEach((ab) => {
 			const buttons = ab.querySelectorAll('button');
 			if(buttons.length === 1) {
 				buttons[0].onfocus = () => {
@@ -99,12 +98,12 @@ $waccess = window.$waccess || {};
 	}
 	
 	function activate() {
-		scanDocument4ACS();
+		scanDocument4Waccess();
 		addKeyListener();
 	}
 	
 	const storage = (function() {
-		const KEY = '$_WACCESS';
+		const KEY = '$_WACCESS__-__:P';
 		
 		const dataObject = JSON.parse(sessionStorage.getItem(KEY)) || {
 			waccessActivated: false
@@ -114,12 +113,12 @@ $waccess = window.$waccess || {};
 			sessionStorage.setItem(KEY, JSON.stringify(dataObject));
 		}
 		
-		this.activateAcs = () => {
+		this.activateWaccess = () => {
 			dataObject.waccessActivated = true;
 			persist();
 		};
 		
-		this.isAcsActivated = () => {
+		this.isWaccessActivated = () => {
 			return dataObject.waccessActivated;
 		}
 		
@@ -127,7 +126,7 @@ $waccess = window.$waccess || {};
 	})();
 	
 	window.addEventListener('load', () => {
-		if(!storage.isAcsActivated()) {
+		if(!storage.isWaccessActivated()) {
 			const a = document.getElementById('askWaccess');
 			a.style.display = 'inline-block';
 			a.focus();
@@ -137,7 +136,7 @@ $waccess = window.$waccess || {};
 	});
 
 	self.activateWaccess = () => {
-		storage.activateAcs();
+		storage.activateWaccess();
 		activate();
 		document.getElementById('askWaccess').style.display='none';
 	}
