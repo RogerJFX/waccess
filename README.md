@@ -31,7 +31,8 @@ Example 1:
 	    to=".secondOuterContainer .innerContainer">Go to Sektion 2, line 2 [auto]</button>
 </waccess>
 ~~~
-This is an auto crossover. If the button will gain the focus by a key press "TAB", it will instantly proxy the 
+This is an auto crossover, because there is only one option or button. 
+If the button will gain the focus by a key press "TAB", it will instantly proxy the 
 focus to element with class ".innerContainer" and parent element with class ".secondOuterContainer" (so "to"). 
 If SHIFT+TAB has been pressed, it will proxy to "from", so ".firstOuterContainer".
 
