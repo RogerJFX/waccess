@@ -22,7 +22,8 @@
  */
 
 $waccess = window.$waccess || {};
-(function acs(self) {
+
+(function wcs(self) {
 	
 	let reverseTabbed = false;
 		
@@ -103,7 +104,7 @@ $waccess = window.$waccess || {};
 	}
 	
 	const storage = (function() {
-		const KEY = '$_WACCESS__-__:P';
+		const KEY = '$_WACCESS__-__';
 		
 		const dataObject = JSON.parse(sessionStorage.getItem(KEY)) || {
 			waccessActivated: false
