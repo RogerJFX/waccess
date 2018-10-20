@@ -52,7 +52,7 @@ SHIFT+TAB and press ENTER to get where she wants.
 
 **Note: of course those waccess-elements are not visible.**
 
-###Special events###
+### Special events ###
 
 Sometimes it is useful to declaratively focus a desired element. Just think of a pagination, think 
 of the user "clicks" "page 3" from the pagination below a result list. Wouldn't it be nice to focus 
