@@ -1,0 +1,67 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<link rel="stylesheet" type="text/css" href="css/waccess.css" />
+	<script src="js/waccess.js"></script>
+
+</head>
+<body>
+<div class="waccess">
+	<a id="askWaccess" class="askWaccess" href="javascript:$waccess.activateWaccess();">[hidden] Barrierefreiheit aktivieren</a>
+</div>
+<div class="container firstOuterContainer">
+	<p>Sektion 1</p>
+	<div class="container innerContainer">
+		<button class="bf b1">1</button>
+		<button class="bf b2">2</button>
+	</div>
+	<button class="bf b1">1</button>
+	<button class="bf b2">2</button>
+</div>
+<waccess>
+	<button from=".firstOuterContainer" to=".secondOuterContainer .innerContainer">Go to Sektion 2, line 2 [auto]</button>
+</waccess>
+
+<hr />
+
+<div class="container secondOuterContainer">
+	<p>Sektion 2</p>
+	<button class="bf b1">1</button>
+	<button class="bf b2">2</button>
+	<div class="container innerContainer">
+		<button class="bf b1">1</button>
+		<button class="bf b2">2</button>
+	</div>
+</div>
+
+<waccess>
+	<button from=".secondOuterContainer" to=".thirdOuterContainer">Go to Sektion 3 [select]</button>
+	<button from=".secondOuterContainer" to=".forthOuterContainer">Go to Sektion 4 [select]</button>
+</waccess>
+
+<hr />
+
+<div class="container thirdOuterContainer">
+	<p>Sektion 3</p>
+	<div class="container innerContainer">
+		<button class="bf b1">1</button>
+		<button class="bf b2">2</button>
+	</div>
+	<button class="bf b1">1</button>
+	<button class="bf b2">2</button>
+</div>
+
+<hr />
+
+<div class="container forthOuterContainer">
+	<p>Sektion 3</p>
+	<div class="container innerContainer">
+		<button class="bf b1">1</button>
+		<button class="bf b2">2</button>
+	</div>
+	<button class="bf b1">1</button>
+	<button class="bf b2">2</button>
+</div>
+<button onclick="$waccess.focusElement('.secondOuterContainer .innerContainer')">Goto Section 2, line 2</button>
+</body>
+</html>

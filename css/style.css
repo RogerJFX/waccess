@@ -1,0 +1,10 @@
+/*
+ * Just some testing/demo style.
+ */
+button {
+	margin: 4px;
+}
+*:focus {
+	color: red;
+	font-weight: bold;
+}
