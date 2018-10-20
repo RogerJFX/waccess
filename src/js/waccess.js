@@ -42,7 +42,7 @@ $waccess = window.$waccess || {};
 		if(isFocusable(element)) {
 			return element;
 		}
-		const children = reverseTabbed ? Array.from(element.children).reverse() : Array.from(element.children);
+		const children = reverse ? Array.from(element.children).reverse() : Array.from(element.children);
 		for (const ch of children) {
 			const candidate = findFirstFocusable(ch);
 			if(candidate) {
