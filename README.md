@@ -15,7 +15,7 @@ So this small script may be used to help blind people navigating the web.
 
 *Note: Using the tabindex attribute isn't sufficient, if there is any dynamic content, otherwise it will do.*
 
-###The idea###
+### The idea ###
 
 Ok, lets say, we have HTML containers with child elements, that are dynamically created. 
 Why not creating invisible crossovers between them, that may point even to completely remote containers?
