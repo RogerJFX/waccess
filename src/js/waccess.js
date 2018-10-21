@@ -23,7 +23,17 @@
 
 $waccess = window.$waccess || {};
 
+/**
+ * Programmer's Politeness Policy (PPP)
+ * 
+ * Anything left unclear after reading the code (RTFC)? Please let us know, if you are sure it is our fault.
+ */
 (function wcs(self) {
+    
+    const WACCESS_ELEMENT = 'waccess';
+    const WACCESS_INNER_ELEMENT = 'button';
+    const ATT_FROM = 'from';
+    const ATT_TO = 'to';
 
     let shiftKeyDown = false;
 
@@ -54,15 +64,20 @@ $waccess = window.$waccess || {};
         }
     }
 
-    function gotoFocusable(queries, condition) {
+    function gotoFocusable(queries, singleQCondition, dryRun) {
         const reverse = shiftKeyDown;
-        const containers = (queries.length === 1 && condition) ? document.querySelectorAll(queries[0]) :
+        const containers = (queries.length === 1 && singleQCondition) ? document.querySelectorAll(queries[0]) :
             document.querySelectorAll(reverse ? queries[0] : queries[1]);
-        if (containers.length > 1) {
-            throw new Error('Expected one and only one container element, but found ' + containers.length);
-        } else if (containers.length === 1) {
+        if (containers.length === 1) {
             const candidate = findFirstFocusable(containers[0], reverse);
-            if (candidate) candidate.focus();
+            if (candidate && !dryRun) {
+                candidate.focus();
+            } else if(!candidate && dryRun) {
+                console.error('No focusable element found in container. Query is: ' + queries[0]);
+            }
+        } else if(dryRun) {
+            console.error('Expected one and only one container element, but found ' + containers.length + 
+                '. Query is: ' + queries[0]);
         }
     }
 
@@ -74,24 +89,36 @@ $waccess = window.$waccess || {};
         }
         return true;
     }
+    
+    function validateWaccessButton(button) {
+        if(!button.getAttribute(ATT_FROM) || !button.getAttribute(ATT_TO)) {
+            console.error(button);
+            throw new Error('Not enough arguments for button inside waccess element. ' + 
+                'Please specify attributes "from" and "to". Button is logged above.');
+        }
+        gotoFocusable([button.getAttribute(ATT_FROM)], true, true);
+        gotoFocusable([button.getAttribute(ATT_TO)], true, true);
+    }
 
     function scanDocument4Waccess() {
-        document.querySelectorAll('waccess').forEach((ab) => {
-            const buttons = ab.querySelectorAll('button');
+        document.querySelectorAll(WACCESS_ELEMENT).forEach((ab) => {
+            const buttons = ab.querySelectorAll(WACCESS_INNER_ELEMENT);
             if (buttons.length === 1) {
+                validateWaccessButton(buttons[0]);
                 buttons[0].onfocus = () => 
-                    gotoFocusable([buttons[0].getAttribute('from'), buttons[0].getAttribute('to')]);
+                    gotoFocusable([buttons[0].getAttribute(ATT_FROM), buttons[0].getAttribute(ATT_TO)]);
             } else {
                 const buttonsArr = Array.from(buttons);
-                const froms = buttonsArr.map(b => b.getAttribute('from'));
-                const tos = buttonsArr.map(b => b.getAttribute('to'));
+                const froms = buttonsArr.map(b => b.getAttribute(ATT_FROM));
+                const tos = buttonsArr.map(b => b.getAttribute(ATT_TO));
                 buttons.forEach((b) => {
-                    b.onclick = () => gotoFocusable([b.getAttribute('from'), b.getAttribute('to')]);
+                    validateWaccessButton(b);
+                    b.onclick = () => gotoFocusable([b.getAttribute(ATT_FROM), b.getAttribute(ATT_TO)]);
                     if (hasEqualEntries(froms)) {
-                        b.onfocus = () => gotoFocusable([b.getAttribute('from')], shiftKeyDown === true);
+                        b.onfocus = () => gotoFocusable([b.getAttribute(ATT_FROM)], shiftKeyDown === true);
                     }
                     if (hasEqualEntries(tos)) {
-                        b.onfocus = () => gotoFocusable([b.getAttribute('to')], shiftKeyDown === false);
+                        b.onfocus = () => gotoFocusable([b.getAttribute(ATT_TO)], shiftKeyDown === false);
                     }
                 });
             }
@@ -100,7 +127,7 @@ $waccess = window.$waccess || {};
 
     function addKeyListeners() {
         window.addEventListener('keydown', (evt) => {
-            switch (evt.keyCode) { // we leave it like this at the moment.
+            switch (evt.keyCode) { // we leave it like this for the moment.
                 case 16:
                     shiftKeyDown = true;
                     break;
