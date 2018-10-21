@@ -26,7 +26,9 @@ $waccess = window.$waccess || {};
 /**
  * Programmer's Politeness Policy (PPP)
  * 
- * Anything left unclear after reading the code (RTFC)? Please let us know, if you are sure it is our fault.
+ * Anything left unclear after reading the code (RTFC)? Please let me know, once you are sure it is my fault.
+ * 
+ * This small script was animated by Mr. Marcus Antonius Paulinus. It is dedicated to him as well.
  */
 (function wcs(self) {
     
@@ -93,8 +95,8 @@ $waccess = window.$waccess || {};
     function validateWaccessButton(button) {
         if(!button.getAttribute(ATT_FROM) || !button.getAttribute(ATT_TO)) {
             console.error(button);
-            throw new Error('Not enough arguments for button inside waccess element. ' + 
-                'Please specify attributes "from" and "to". Button is logged above.');
+            throw new Error('Not enough arguments for button inside ' + WACCESS_ELEMENT + ' element. ' + 
+                'Please specify attributes "from" and "to". ' + WACCESS_INNER_ELEMENT + ' is logged above.');
         }
         gotoFocusable([button.getAttribute(ATT_FROM)], true, true);
         gotoFocusable([button.getAttribute(ATT_TO)], true, true);
