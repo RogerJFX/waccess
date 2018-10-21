@@ -18,8 +18,12 @@
 	<button class="bf b1">1</button>
 	<button class="bf b2">2</button>
 </div>
+<ul>
+	<li>Forward: Go to Sektion 2, line 2, column 1 [auto]</li>
+	<li>Back: Go to Sektion 1, row 2, column 2 [auto]</li>
+</ul>
 <waccess>
-	<button from=".firstOuterContainer" to=".secondOuterContainer .innerContainer">Go to Sektion 2, line 2 [auto]</button>
+	<button from=".firstOuterContainer" to=".secondOuterContainer .innerContainer">Hidden button</button>
 </waccess>
 
 <hr />
@@ -33,10 +37,14 @@
 		<button class="bf b2">2</button>
 	</div>
 </div>
-
+<ul>
+	<li>Button 1 forward: Go to Sektion 3, line 1 [select]</li>
+	<li>Button 2 forward: Go to Sektion 4, line 1 [select]</li>
+	<li>Both buttons back: Go to Sektion 2, row 2, column 2 [auto]</li>
+</ul>
 <waccess>
-	<button from=".secondOuterContainer" to=".thirdOuterContainer">Go to Sektion 3 [select]</button>
-	<button from=".secondOuterContainer" to=".forthOuterContainer">Go to Sektion 4 [select]</button>
+	<button from=".secondOuterContainer" to=".thirdOuterContainer">Hidden button 1</button>
+	<button from=".secondOuterContainer" to=".forthOuterContainer">Hidden button 2</button>
 </waccess>
 
 <hr />
@@ -50,11 +58,17 @@
 	<button class="bf b1">1</button>
 	<button class="bf b2">2</button>
 </div>
-
+<ul>
+	<li>Forward: Go to Sektion 4, line 1 [auto]</li>
+	<li>Back: Go to Sektion 3, row 1, <strong>column 1</strong> [auto]</li>
+</ul>
+<waccess>
+	<button from=".thirdOuterContainer .innerContainer button:first-of-type" to=".forthOuterContainer">Hidden button</button>
+</waccess>
 <hr />
 
 <div class="container forthOuterContainer">
-	<p>Sektion 3</p>
+	<p>Sektion 4</p>
 	<div class="container innerContainer">
 		<button class="bf b1">1</button>
 		<button class="bf b2">2</button>
@@ -62,6 +76,10 @@
 	<button class="bf b1">1</button>
 	<button class="bf b2">2</button>
 </div>
-<button onclick="$waccess.focusElement('.secondOuterContainer .innerContainer')">Goto Section 2, line 2</button>
+<p>Normal visible button.</p>
+<ul>
+	<li>Normal visible button. Jumps to Section 2, row 2, column depends on SHIFT key pressed. Declarative implementation.</li>
+</ul>
+<button onclick="$waccess.focusElement('.secondOuterContainer .innerContainer')">Hidden or normal button.</button>
 </body>
 </html>

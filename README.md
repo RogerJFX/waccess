@@ -48,7 +48,8 @@ Example 2:
 	    to=".forthOuterContainer">Go to Sektion 4 [select]</button>
 </waccess>
 ~~~
-Here no auto forwarding is performed. The user has two options. She may select one option by again using TAB or 
+Here auto forwarding is only performed backwards, because both buttons point to the same "from" - target. 
+Forward the user has two options. She may select one option by again using TAB or 
 SHIFT+TAB and press ENTER to get where she wants.
 
 **Note: of course those waccess-elements are not visible.**

@@ -25,14 +25,16 @@ $waccess = window.$waccess || {};
 
 (function wcs(self) {
 	
-	let reverseTabbed = false;
+	let shiftKeyDown = false;
 		
 	function isFocusable(element) {
-		return (element.getAttribute && !(!element.getAttribute('tabindex'))) || (function() {
+		return !(!element.getAttribute('tabindex')) || (() => {
 			switch(element.tagName.toLowerCase()) {
 				case 'a':
 				case 'button':
 				case 'input':
+				case 'textarea':
+				case 'select':
 				return true;
 			}
 			return false;
@@ -45,16 +47,16 @@ $waccess = window.$waccess || {};
 		}
 		const children = reverse ? Array.from(element.children).reverse() : Array.from(element.children);
 		for (const ch of children) {
-			const candidate = findFirstFocusable(ch);
+			const candidate = findFirstFocusable(ch, reverse);
 			if(candidate) {
 				return candidate;
 			}
 		}
 	}
 	
-	function gotoFocusable(queries) {
-		const reverse = reverseTabbed;
-		const containers = queries.length === 1 ? document.querySelectorAll(queries[0]) :
+	function gotoFocusable(queries, condition) {
+		const reverse = shiftKeyDown;
+		const containers = (queries.length === 1 && condition) ? document.querySelectorAll(queries[0]) :
 			document.querySelectorAll(reverse ? queries[0] : queries[1]);
 		if(containers.length > 1) {
 			throw new Error('Expected one and only one container element, but found ' + containers.length);
@@ -64,35 +66,49 @@ $waccess = window.$waccess || {};
 		}
 	}
 	
+	function hasEqualEntries(arr) {
+		for(let i = 1; i < arr.length; i++) {
+			if(arr[i] !== arr[0]) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	function scanDocument4Waccess() {
 		document.querySelectorAll('waccess').forEach((ab) => {
 			const buttons = ab.querySelectorAll('button');
 			if(buttons.length === 1) {
-				buttons[0].onfocus = () => {
-					gotoFocusable([buttons[0].getAttribute('from'), buttons[0].getAttribute('to') ]);
-				}
+				buttons[0].onfocus = () => gotoFocusable([buttons[0].getAttribute('from'), buttons[0].getAttribute('to')]);
 			} else {
+				const buttonsArr = Array.from(buttons);
+				const froms = buttonsArr.map(b => b.getAttribute('from'));
+				const tos = buttonsArr.map(b => b.getAttribute('to'));
 				buttons.forEach((b) => {
-					b.onclick = () => {
-						gotoFocusable([b.getAttribute('from'), b.getAttribute('to')]);
-					};
+					b.onclick = () => gotoFocusable([b.getAttribute('from'), b.getAttribute('to')]);
+					if(hasEqualEntries(froms)) {
+						b.onfocus = () => gotoFocusable([b.getAttribute('from')], shiftKeyDown === true);
+					} 
+					if(hasEqualEntries(tos)) {
+						b.onfocus = () => gotoFocusable([b.getAttribute('to')], shiftKeyDown === false);
+					}
 				});
 			}
 		});
 	};
 	
-	function addKeyListener() {
+	function addKeyListeners() {
 		window.addEventListener('keydown', (evt) => {
-			switch(evt.keyCode) {
+			switch(evt.keyCode) { // we leave it like this at the moment.
 				case 16:
-					reverseTabbed = true;
+					shiftKeyDown = true;
 				break;
 			}
 		});
 		window.addEventListener('keyup', (evt) => {
 			switch(evt.keyCode) {
 				case 16:
-					reverseTabbed = false;
+					shiftKeyDown = false;
 				break;
 			}
 		});
@@ -100,10 +116,10 @@ $waccess = window.$waccess || {};
 	
 	function activate() {
 		scanDocument4Waccess();
-		addKeyListener();
+		addKeyListeners();
 	}
 	
-	const storage = (function() {
+	const storage = (() => {
 		const KEY = '$_WACCESS__-__';
 		
 		const dataObject = JSON.parse(sessionStorage.getItem(KEY)) || {
@@ -142,8 +158,6 @@ $waccess = window.$waccess || {};
 		document.getElementById('askWaccess').style.display='none';
 	}
 	
-	self.focusElement = (query) => {
-		gotoFocusable([query]);
-	}
+	self.focusElement = (query) => gotoFocusable([query], true);
 
 })($waccess);

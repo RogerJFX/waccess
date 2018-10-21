@@ -5,6 +5,7 @@ button {
 	margin: 4px;
 }
 *:focus {
-	color: red;
+	color: black;
+	background:red;
 	font-weight: bold;
 }
