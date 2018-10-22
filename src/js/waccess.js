@@ -38,6 +38,7 @@ $waccess = window.$waccess || {};
     const ATT_TO = 'to';
 
     let shiftKeyDown = false;
+    let warningsEnabled = false;
 
     function isFocusable(element) {
         return !(!element.getAttribute('tabindex')) || (() => {
@@ -74,8 +75,8 @@ $waccess = window.$waccess || {};
             const candidate = findFirstFocusable(containers[0], reverse);
             if (candidate && !dryRun) {
                 candidate.focus();
-            } else if(!candidate && dryRun) {
-                console.error('No focusable element found in container. Query is: ' + queries[0]);
+            } else if(!candidate && dryRun && warningsEnabled) {
+                console.warn('No focusable element found in container so far. Query is: ' + queries[0]);
             }
         } else if(dryRun) {
             console.error('Expected one and only one container element, but found ' + containers.length + 
@@ -153,20 +154,26 @@ $waccess = window.$waccess || {};
         const KEY = '$_WACCESS__-__';
 
         const dataObject = JSON.parse(sessionStorage.getItem(KEY)) || {
-            waccessActivated: false
+            waccessActivated: false,
+            warningsEnabled: false
         };
 
         function persist() {
             sessionStorage.setItem(KEY, JSON.stringify(dataObject));
         }
 
-        this.activateWaccess = () => {
+        this.activateWaccess = (warningsEnabled) => {
             dataObject.waccessActivated = true;
+            dataObject.warningsEnabled = warningsEnabled;
             persist();
         };
 
         this.isWaccessActivated = () => {
             return dataObject.waccessActivated;
+        }
+        
+        this.isWarningsEnabled = () => {
+            return dataObject.warningsEnabled;
         }
 
         return this;
@@ -178,12 +185,15 @@ $waccess = window.$waccess || {};
             a.style.display = 'inline-block';
             a.focus();
         } else {
+            warningsEnabled = storage.isWarningsEnabled;
             activate();
         }
     });
 
-    self.activateWaccess = () => {
-        storage.activateWaccess();
+    self.activateWaccess = (enableWarnings) => {
+        const eW = !enableWarnings ? false : true;
+        warningsEnabled = eW;
+        storage.activateWaccess(eW);
         activate();
         document.getElementById('askWaccess').style.display = 'none';
     }
