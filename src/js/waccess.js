@@ -103,30 +103,42 @@ $waccess = window.$waccess || {};
         gotoFocusable([button.getAttribute(ATT_TO)], true, true);
     }
 
-    function scanDocument4Waccess() {
+    function scanDocument4Waccess(activate) {
         document.querySelectorAll(WACCESS_ELEMENT).forEach((ab) => {
             const buttons = ab.querySelectorAll(WACCESS_INNER_ELEMENT);
-            if (buttons.length === 1) {
-                validateWaccessButton(buttons[0]);
-                buttons[0].onfocus = () => 
-                    gotoFocusable([buttons[0].getAttribute(ATT_FROM), buttons[0].getAttribute(ATT_TO)]);
-            } else {
-                const buttonsArr = Array.from(buttons);
-                const froms = buttonsArr.map(b => b.getAttribute(ATT_FROM));
-                const tos = buttonsArr.map(b => b.getAttribute(ATT_TO));
-                buttons.forEach((b) => {
-                    validateWaccessButton(b);
-                    b.onclick = () => gotoFocusable([b.getAttribute(ATT_FROM), b.getAttribute(ATT_TO)]);
-                    if (hasEqualEntries(froms)) {
-                        b.onfocus = () => gotoFocusable([b.getAttribute(ATT_FROM)], shiftKeyDown === true);
-                    }
-                    if (hasEqualEntries(tos)) {
-                        b.onfocus = () => gotoFocusable([b.getAttribute(ATT_TO)], shiftKeyDown === false);
-                    }
-                });
-            }
+            activate ? activateButtons(buttons) : deactivateButtons(buttons);
         });
     };
+    
+    function deactivateButtons(buttons) {
+        buttons.forEach((b) => {
+            b.setAttribute('tabindex', '-1');
+        });
+    }
+    
+    function activateButtons(buttons) {
+        if (buttons.length === 1) {
+            buttons[0].removeAttribute('tabindex');
+            validateWaccessButton(buttons[0]);
+            buttons[0].onfocus = () => 
+                gotoFocusable([buttons[0].getAttribute(ATT_FROM), buttons[0].getAttribute(ATT_TO)]);
+        } else {
+            const buttonsArr = Array.from(buttons);
+            const froms = buttonsArr.map(b => b.getAttribute(ATT_FROM));
+            const tos = buttonsArr.map(b => b.getAttribute(ATT_TO));
+            buttons.forEach((b) => {
+                b.removeAttribute('tabindex');
+                validateWaccessButton(b);
+                b.onclick = () => gotoFocusable([b.getAttribute(ATT_FROM), b.getAttribute(ATT_TO)]);
+                if (hasEqualEntries(froms)) {
+                    b.onfocus = () => gotoFocusable([b.getAttribute(ATT_FROM)], shiftKeyDown === true);
+                }
+                if (hasEqualEntries(tos)) {
+                    b.onfocus = () => gotoFocusable([b.getAttribute(ATT_TO)], shiftKeyDown === false);
+                }
+            });
+        }
+    }
 
     function addKeyListeners() {
         window.addEventListener('keydown', (evt) => {
@@ -145,8 +157,8 @@ $waccess = window.$waccess || {};
         });
     }
 
-    function activate() {
-        scanDocument4Waccess();
+    function activate(activate) {
+        scanDocument4Waccess(activate);
         addKeyListeners();
     }
 
@@ -184,9 +196,10 @@ $waccess = window.$waccess || {};
             const a = document.getElementById('askWaccess');
             a.style.display = 'inline-block';
             a.focus();
+            activate(false);
         } else {
             warningsEnabled = storage.isWarningsEnabled;
-            activate();
+            activate(true);
         }
     });
 
@@ -194,7 +207,7 @@ $waccess = window.$waccess || {};
         const eW = !enableWarnings ? false : true;
         warningsEnabled = eW;
         storage.activateWaccess(eW);
-        activate();
+        activate(true);
         document.getElementById('askWaccess').style.display = 'none';
     }
 
