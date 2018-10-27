@@ -127,7 +127,7 @@ $waccess = window.$waccess || {};
         });
     }
     
-    function forward(buttons, container) {
+    function forward(buttons) {
         if (buttons.length === 1) {
             buttons[0].onfocus = () => {
                 gotoFocusable([buttons[0].getAttribute(ATT_FROM), buttons[0].getAttribute(ATT_TO)]);
@@ -163,7 +163,7 @@ $waccess = window.$waccess || {};
             }
         });
         if(!(ATT_VAL_DISABLE_AUTO_FORWARD === container.getAttribute(ATT_AUTO_FORWARD))) {
-            forward(buttons, container);
+            forward(buttons);
         }
     }
 
