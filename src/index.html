@@ -6,9 +6,10 @@
 
 </head>
 <body>
-<div class="waccess">
-	<a id="askWaccess" class="askWaccess" href="javascript:$waccess.activateWaccess();">[hidden] Barrierefreiheit aktivieren</a>
-</div>
+<waccess>
+	<a class="welcome" href="javascript:$waccess.activateWaccess();">Question: activaste Waccess?</a>
+    <a class="activated" href="javascript:;">Confirmation: Waccess now activated.</a>
+</waccess>
 <div class="container firstOuterContainer">
 	<p>Sektion 1</p>
 	<div class="container innerContainer">
@@ -19,7 +20,7 @@
 	<button class="bf b2">2</button>
 </div>
 <ul>
-	<li>Forward: Go to Sektion 2, line 2, column 1 [auto]</li>
+	<li>Forward: Go to Sektion 2, row 2, column 1 [auto]</li>
 	<li>Back: Go to Sektion 1, row 2, column 2 [auto]</li>
 </ul>
 <waccess>
@@ -30,21 +31,26 @@
 
 <div class="container secondOuterContainer">
 	<p>Sektion 2</p>
-	<button class="bf b1">1</button>
-	<button class="bf b2">2</button>
+	<div class="container firstInnerContainer">
+		<button class="bf b1">1</button>
+		<button class="bf b2">2</button>
+	</div>
 	<div class="container innerContainer">
 		<button class="bf b1">1</button>
 		<button class="bf b2">2</button>
 	</div>
 </div>
 <ul>
-	<li>Button 1 forward: Go to Sektion 3, line 1 [select]</li>
-	<li>Button 2 forward: Go to Sektion 4, line 1 [select]</li>
-	<li>Both buttons back: Go to Sektion 2, row 2, column 2 [auto]</li>
+	<li>Button 1 forward: Go to Sektion 3, row 1 [select]</li>
+	<li>Button 2 forward: Go to Sektion 4, row 1 [select]</li>
+    <li>Button 3 forward: Go to Sektion 5, row 2 [select]</li>
+	<li>All buttons back: Go to Sektion 2, row 2, column 2 [auto]</li>
 </ul>
+
 <waccess>
-	<button from=".secondOuterContainer" to=".thirdOuterContainer">Hidden button 1</button>
-	<button from=".secondOuterContainer" to=".forthOuterContainer">Hidden button 2</button>
+	<button from=".secondOuterContainer .firstInnerContainer" to=".thirdOuterContainer">Hidden button 1</button>
+	<button from=".secondOuterContainer .firstInnerContainer" to=".forthOuterContainer">Hidden button 2</button>
+    <button from=".secondOuterContainer .firstInnerContainer" to=".fifthOuterContainer .innerContainer">Hidden button 3</button>
 </waccess>
 
 <hr />
@@ -75,6 +81,18 @@
 	</div>
 	<button class="bf b1">1</button>
 	<button class="bf b2">2</button>
+</div>
+<hr />
+
+<div class="container fifthOuterContainer">
+	<p>Sektion 5</p>
+
+	<button class="bf b1">1</button>
+	<button class="bf b2">2</button>
+    	<div class="container innerContainer">
+		<button class="bf b1">1</button>
+		<button class="bf b2">2</button>
+	</div>
 </div>
 <p>Normal visible button.</p>
 <ul>

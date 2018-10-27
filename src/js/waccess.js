@@ -33,10 +33,15 @@ $waccess = window.$waccess || {};
 (function wcs(self) {
     
     const WACCESS_ELEMENT = 'waccess';
+    const WACCESS_ELEMENT_ATT_WELCOME = 'welcome';
+    const WACCESS_ELEMENT_ATT_ACTIVATED = 'activated';
     const WACCESS_INNER_ELEMENT = 'button';
+    const ATT_AUTO_FORWARD = 'autoforward';
     const ATT_FROM = 'from';
     const ATT_TO = 'to';
+    const ATT_VAL_DISABLE_AUTO_FORWARD = 'false';
 
+    let currentFocussedElement = null;
     let shiftKeyDown = false;
     let warningsEnabled = false;
 
@@ -96,19 +101,25 @@ $waccess = window.$waccess || {};
     function validateWaccessButton(button) {
         if(!button.getAttribute(ATT_FROM) || !button.getAttribute(ATT_TO)) {
             console.error(button);
-            throw new Error('Not enough arguments for button inside ' + WACCESS_ELEMENT + ' element. ' + 
-                'Please specify attributes "from" and "to". ' + WACCESS_INNER_ELEMENT + ' is logged above.');
+            throw new Error(`Not enough arguments for button inside ${WACCESS_ELEMENT} element.
+                Please specify attributes "from" and "to". ${WACCESS_INNER_ELEMENT} is logged above.`
+                .replace(/\s+/g, ' '));
         }
         gotoFocusable([button.getAttribute(ATT_FROM)], true, true);
         gotoFocusable([button.getAttribute(ATT_TO)], true, true);
     }
 
     function scanDocument4Waccess(activate) {
-        document.querySelectorAll(WACCESS_ELEMENT).forEach((ab) => {
-            const buttons = ab.querySelectorAll(WACCESS_INNER_ELEMENT);
-            activate ? activateButtons(buttons) : deactivateButtons(buttons);
+        document.querySelectorAll(WACCESS_ELEMENT).forEach((container) => {
+            const buttons = container.querySelectorAll(WACCESS_INNER_ELEMENT);
+            activate ? activateButtons(buttons, container) : deactivateButtons(buttons);
         });
     };
+    
+    function isWaccessElementFocussed() {
+        return currentFocussedElement !== null && 
+            currentFocussedElement.parentElement.nodeName.toLowerCase() === WACCESS_ELEMENT;
+    }
     
     function deactivateButtons(buttons) {
         buttons.forEach((b) => {
@@ -116,27 +127,43 @@ $waccess = window.$waccess || {};
         });
     }
     
-    function activateButtons(buttons) {
+    function forward(buttons, container) {
         if (buttons.length === 1) {
-            buttons[0].removeAttribute('tabindex');
-            validateWaccessButton(buttons[0]);
-            buttons[0].onfocus = () => 
+            buttons[0].onfocus = () => {
                 gotoFocusable([buttons[0].getAttribute(ATT_FROM), buttons[0].getAttribute(ATT_TO)]);
+            }
         } else {
             const buttonsArr = Array.from(buttons);
             const froms = buttonsArr.map(b => b.getAttribute(ATT_FROM));
             const tos = buttonsArr.map(b => b.getAttribute(ATT_TO));
             buttons.forEach((b) => {
-                b.removeAttribute('tabindex');
-                validateWaccessButton(b);
-                b.onclick = () => gotoFocusable([b.getAttribute(ATT_FROM), b.getAttribute(ATT_TO)]);
                 if (hasEqualEntries(froms)) {
-                    b.onfocus = () => gotoFocusable([b.getAttribute(ATT_FROM)], shiftKeyDown === true);
-                }
-                if (hasEqualEntries(tos)) {
-                    b.onfocus = () => gotoFocusable([b.getAttribute(ATT_TO)], shiftKeyDown === false);
+                    b.onfocus = () => {
+                        if(!isWaccessElementFocussed()) {
+                            gotoFocusable([b.getAttribute(ATT_FROM)], shiftKeyDown === true);
+                        }
+                    }
+                } else if (hasEqualEntries(tos)) {
+                    b.onfocus = () => {
+                        if(!isWaccessElementFocussed()) {
+                            gotoFocusable([b.getAttribute(ATT_TO)], shiftKeyDown === false);
+                        }
+                    }
                 }
             });
+        }   
+    }
+    
+    function activateButtons(buttons, container) {
+        buttons.forEach((b) => {
+            b.removeAttribute('tabindex');
+            validateWaccessButton(b);
+            b.onclick = () => {
+                gotoFocusable([b.getAttribute(ATT_FROM), b.getAttribute(ATT_TO)]);
+            }
+        });
+        if(!(ATT_VAL_DISABLE_AUTO_FORWARD === container.getAttribute(ATT_AUTO_FORWARD))) {
+            forward(buttons, container);
         }
     }
 
@@ -152,6 +179,10 @@ $waccess = window.$waccess || {};
             switch (evt.keyCode) {
                 case 16:
                     shiftKeyDown = false;
+                    break;
+                case 9:
+                case 13:
+                    currentFocussedElement = document.activeElement;
                     break;
             }
         });
@@ -193,7 +224,7 @@ $waccess = window.$waccess || {};
 
     window.addEventListener('load', () => {
         if (!storage.isWaccessActivated()) {
-            const a = document.getElementById('askWaccess');
+            const a = document.querySelector(`${WACCESS_ELEMENT} .${WACCESS_ELEMENT_ATT_WELCOME}`);
             a.style.display = 'inline-block';
             a.focus();
             activate(false);
@@ -208,9 +239,17 @@ $waccess = window.$waccess || {};
         warningsEnabled = eW;
         storage.activateWaccess(eW);
         activate(true);
-        document.getElementById('askWaccess').style.display = 'none';
+        document.querySelector(`${WACCESS_ELEMENT} .${WACCESS_ELEMENT_ATT_WELCOME}`).style.display = 'none';
+        const confirmationElement = document.querySelector(`${WACCESS_ELEMENT} .${WACCESS_ELEMENT_ATT_ACTIVATED}`);
+        confirmationElement.style.display = 'inline-block';
+        confirmationElement.focus();
+        currentFocussedElement = null;
     }
 
-    self.focusElement = (query) => gotoFocusable([query], true);
+    self.focusElement = (query) => {
+        if(storage.isWaccessActivated()) {
+            gotoFocusable([query], true);
+        }
+    }
 
 })($waccess);

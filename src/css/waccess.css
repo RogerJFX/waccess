@@ -1,11 +1,11 @@
-waccess, div.waccess {
-	/*
-	position: absolute;
+waccess {
+/*
+	position: fixed;
 	left: -1000px;
-	*/
+*/
 }
 
-.askWaccess {
+waccess .welcome, waccess .activated {
 	display: none;
 }
 
