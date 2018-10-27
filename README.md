@@ -3,6 +3,12 @@ WACCESS
 
 A small script to improve web accessibilty for blind people.
 
+Working demo here:
+	
+	http://showcase.crazything.eu/js-showcase/waccess/
+	
+Don't forget to have a look at the sessionStorage.
+
 Blind people must navigate using the keyboard. Since they cannot find elements just by 
 looking at the screen, they have to step through a web page by using the TAB key or SHIFT+TAB to go back.
 There are programs, that read aloud the content of e.g. focused elements. So blind people could 
