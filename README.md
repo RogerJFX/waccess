@@ -3,6 +3,10 @@ WACCESS
 
 A small script to improve web accessibilty for blind people.
 
+Only useful in relation to ARIA. See here:
+
+	https://www.w3.org/TR/aria-in-html/
+
 Working demo here:
 	
 	http://showcase.crazything.eu/js-showcase/waccess/
