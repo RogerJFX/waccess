@@ -246,8 +246,8 @@ $waccess = window.$waccess || {};
         currentFocussedElement = null;
     }
 
-    self.focusElement = (query) => {
-        if(storage.isWaccessActivated()) {
+    self.focusElement = (query, force) => {
+        if(force || storage.isWaccessActivated()) {
             gotoFocusable([query], true);
         }
     }

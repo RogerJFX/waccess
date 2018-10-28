@@ -1,0 +1,107 @@
+<html>
+<head>
+    <meta charset="UTF-8"/>
+	<link rel="stylesheet" type="text/css" href="css/style2.css" />
+	<link rel="stylesheet" type="text/css" href="css/waccess.css" />
+	<script src="js/waccess.js"></script>
+
+</head>
+<body>
+<waccess>
+	<a class="welcome" href="javascript:$waccess.activateWaccess();">Möchten Sie unsere barrierefreie Navigation aktivieren?</a>
+    <a class="activated" href="javascript:;">Die barrierefreie Navigation ist aktiviert.</a>
+</waccess>
+<div class="container firstOuterContainer">
+	<p tabindex="0">Sektion Tierchen</p>
+	<div class="container innerContainer">
+		<button class="bf b1">Elefant</button>
+		<button class="bf b2">Krokodil</button>
+	</div>
+	<button class="bf b1">Fledermaus</button>
+	<button class="bf b2">Opossum</button>
+</div>
+<ul>
+	<li>Forward: Go to Dennis</li>
+	<li>Back: Go to Sektion Tierchen</li>
+</ul>
+<waccess>
+	<button from=".firstOuterContainer p:first-of-type" to=".secondOuterContainer .innerContainer">Hidden button</button>
+</waccess>
+
+<hr />
+
+<div class="container secondOuterContainer">
+	<p>Sektion Elite Team 14</p>
+	<div class="container firstInnerContainer">
+		<button class="bf b1">Denise</button>
+		<button class="bf b2">Katharina</button>
+	</div>
+	<div class="container innerContainer">
+		<button class="bf b1">Dennis</button>
+		<button class="bf b2">Christian</button>
+	</div>
+</div>
+<ul>
+	<li>Button 1 forward: Go to Hannes</li>
+	<li>Button 2 forward: Go to 1. FC Nürnberg (1)</li>
+    <li>Button 3 forward: Go to Eintracht Frankfurt (2)</li>
+	<li>All buttons back: Go to Überschrift "Wählen Sie hier..."</li>
+</ul>
+
+<waccess>
+    <a id="auswahl_der_naechsten_Punkte" href="javascript:;">Wählen sie hier, wohin Sie navigieren wollen</a>
+    <br/>
+	<button from="#auswahl_der_naechsten_Punkte" to=".thirdOuterContainer">Wählen Sie Hannes</button>
+	<button from="#auswahl_der_naechsten_Punkte" to=".forthOuterContainer">Wählen Sie den 1.FC Nürnberg</button>
+    <button from="#auswahl_der_naechsten_Punkte" to=".fifthOuterContainer .innerContainer">Wählen Sie Eintracht Frankfurt</button>
+</waccess>
+
+<hr />
+
+<div class="container thirdOuterContainer">
+	<p>Sektion Ersatzbank Team 14</p>
+	<div class="container innerContainer">
+		<button class="bf b1">Hannes</button>
+		<button class="bf b2">Henning</button>
+	</div>
+	<button class="bf b1">Özgür</button>
+	<button class="bf b2">Julian</button>
+</div>
+<ul>
+	<li>Forward: Go to 1.FC Nürnberg (2)</li>
+	<li>Back: Go to Özgür</li>
+</ul>
+<waccess>
+	<button from=".thirdOuterContainer > button:first-of-type" to=".forthOuterContainer > button:first-of-type">Hidden button</button>
+</waccess>
+<hr />
+
+<div class="container forthOuterContainer">
+	<p>Sektion Abstiegs-Kandidaten der 1. Bundesliga</p>
+	<div class="container innerContainer">
+		<button class="bf b1">1. FC Nürnberg</button>
+		<button class="bf b2">1. FC Düsseldorf</button>
+	</div>
+	<button class="bf b1">1. FC Nürnberg</button>
+	<button class="bf b2">1. FC Nürnberg</button>
+</div>
+<hr />
+
+<div class="container fifthOuterContainer">
+	<p>Sektion Meisterschafts-Kandidaten</p>
+
+	<button class="bf b1">Borussia Dortmund</button>
+	<button class="bf b2">Eintracht Frankfurt</button>
+    	<div class="container innerContainer">
+		<button class="bf b1">Eintracht Frankfurt</button>
+		<button class="bf b2">FC Bayern München</button>
+	</div>
+</div>
+<hr />
+<p>Normal visible button. Just for some event. Normally this should be used e.g. if a REST response has been arrived.</p>
+<ul>
+	<li>Go to Julian</li>
+</ul>
+<button onclick="$waccess.focusElement('.thirdOuterContainer > button:last-of-type')">Hidden or normal button.</button>
+</body>
+</html>
