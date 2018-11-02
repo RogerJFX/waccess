@@ -32,21 +32,29 @@ $waccess = window.$waccess || {};
  */
 (function wcs(self) {
     
-    const WACCESS_ELEMENT = 'waccess';
-    const WACCESS_ELEMENT_ATT_WELCOME = 'welcome';
-    const WACCESS_ELEMENT_ATT_ACTIVATED = 'activated';
-    const WACCESS_INNER_ELEMENT = 'button';
-    const ATT_AUTO_FORWARD = 'autoforward';
-    const ATT_FROM = 'from';
-    const ATT_TO = 'to';
-    const ATT_VAL_DISABLE_AUTO_FORWARD = 'false';
+    Array.from = Array.from || function (collection) {
+        var result = new Array(); // :O
+        for (var i = 0; i < collection.length; i++) {
+            result.push(collection[i]);
+        }
+        return result;
+    }
 
-    let currentFocussedElement = null;
-    let shiftKeyDown = false;
-    let warningsEnabled = false;
+    var WACCESS_ELEMENT = 'waccess';
+    var WACCESS_ELEMENT_ATT_WELCOME = 'welcome';
+    var WACCESS_ELEMENT_ATT_ACTIVATED = 'activated';
+    var WACCESS_INNER_ELEMENT = 'button';
+    var ATT_AUTO_FORWARD = 'autoforward';
+    var ATT_FROM = 'from';
+    var ATT_TO = 'to';
+    var ATT_VAL_DISABLE_AUTO_FORWARD = 'false';
+
+    var currentFocussedElement = null;
+    var shiftKeyDown = false;
+    var warningsEnabled = false;
 
     function isFocusable(element) {
-        return !!element.getAttribute('tabindex') || () => {
+        return !!element.getAttribute('tabindex') || function () {
             switch (element.tagName.toLowerCase()) {
                 case 'a':
                 case 'button':
@@ -63,119 +71,119 @@ $waccess = window.$waccess || {};
         if (isFocusable(element)) {
             return element;
         }
-        const children = reverse ? Array.from(element.children).reverse() : Array.from(element.children);
-        for (const ch of children) {
-            const candidate = findFirstFocusable(ch, reverse);
+        var children = reverse ? Array.from(element.children).reverse() : Array.from(element.children);
+        for (var i = 0; i < children.length; i++) {
+            var candidate = findFirstFocusable(children[i], reverse);
             if (candidate) {
                 return candidate;
-            }
+            }   
         }
     }
 
     function gotoFocusable(queries, singleQCondition, dryRun) {
-        const reverse = shiftKeyDown;
-        const containers = (queries.length === 1 && singleQCondition) ? document.querySelectorAll(queries[0]) :
-            document.querySelectorAll(reverse ? queries[0] : queries[1]);
+        var reverse = shiftKeyDown;
+        var containers = queries.length === 1 && singleQCondition ? document.querySelectorAll(queries[0]) : document.querySelectorAll(reverse ? queries[0] : queries[1]);
         if (containers.length === 1) {
-            const candidate = findFirstFocusable(containers[0], reverse);
+            var candidate = findFirstFocusable(containers[0], reverse);
             if (candidate && !dryRun) {
                 candidate.focus();
-            } else if(!candidate && dryRun && warningsEnabled) {
+            } else if (!candidate && dryRun && warningsEnabled) {
                 console.warn('No focusable element found in container so far. Query is: ' + queries[0]);
             }
-        } else if(dryRun) {
-            console.error('Expected one and only one container element, but found ' + containers.length + 
-                '. Query is: ' + queries[0]);
+        } else if (dryRun) {
+            console.error('Expected one and only one container element, but found ' + containers.length + '. Query is: ' + queries[0]);
         }
     }
 
     function hasEqualEntries(arr) {
-        for (let i = 1; i < arr.length; i++) {
+        for (var i = 1; i < arr.length; i++) {
             if (arr[i] !== arr[0]) {
                 return false;
             }
         }
         return true;
     }
-    
+
     function validateWaccessButton(button) {
-        if(!button.getAttribute(ATT_FROM) || !button.getAttribute(ATT_TO)) {
-            console.error(button);
-            throw new Error(`Not enough arguments for button inside ${WACCESS_ELEMENT} element.
-                Please specify attributes "from" and "to". ${WACCESS_INNER_ELEMENT} is logged above.`
-                .replace(/\s+/g, ' '));
+        if (!button.getAttribute(ATT_FROM) || !button.getAttribute(ATT_TO)) {
+            throw new Error('Not enough arguments for button inside ' + WACCESS_ELEMENT + 
+                ' element.\nPlease specify attributes "from" and "to". ' + WACCESS_INNER_ELEMENT + 
+                ' is logged above.');
         }
         gotoFocusable([button.getAttribute(ATT_FROM)], true, true);
         gotoFocusable([button.getAttribute(ATT_TO)], true, true);
     }
 
     function scanDocument4Waccess(activate) {
-        document.querySelectorAll(WACCESS_ELEMENT).forEach((container) => {
-            const buttons = container.querySelectorAll(WACCESS_INNER_ELEMENT);
+        Array.from(document.querySelectorAll(WACCESS_ELEMENT)).forEach(function (container) {
+            var buttons = Array.from(container.querySelectorAll(WACCESS_INNER_ELEMENT));
             activate ? activateButtons(buttons, container) : deactivateButtons(buttons);
         });
+        
     };
-    
+
     function isWaccessElementFocussed() {
-        return currentFocussedElement !== null && 
-            currentFocussedElement.parentElement.nodeName.toLowerCase() === WACCESS_ELEMENT;
+        return currentFocussedElement !== null && currentFocussedElement.parentElement.nodeName.toLowerCase() === WACCESS_ELEMENT;
     }
-    
+
     function deactivateButtons(buttons) {
-        buttons.forEach((b) => {
+        buttons.forEach(function (b) {
             b.setAttribute('tabindex', '-1');
         });
     }
-    
+
     function forward(buttons) {
         if (buttons.length === 1) {
-            buttons[0].onfocus = () => {
+            buttons[0].onfocus = function () {
                 gotoFocusable([buttons[0].getAttribute(ATT_FROM), buttons[0].getAttribute(ATT_TO)]);
-            }
+            };
         } else {
-            const buttonsArr = Array.from(buttons);
-            const froms = buttonsArr.map(b => b.getAttribute(ATT_FROM));
-            const tos = buttonsArr.map(b => b.getAttribute(ATT_TO));
-            buttons.forEach((b) => {
+            var froms = buttons.map(function (b) {
+                return b.getAttribute(ATT_FROM);
+            });
+            var tos = buttons.map(function (b) {
+                return b.getAttribute(ATT_TO);
+            });
+            buttons.forEach(function (b) {
                 if (hasEqualEntries(froms)) {
-                    b.onfocus = () => {
-                        if(!isWaccessElementFocussed()) {
+                    b.onfocus = function () {
+                        if (!isWaccessElementFocussed()) {
                             gotoFocusable([b.getAttribute(ATT_FROM)], shiftKeyDown === true);
                         }
-                    }
+                    };
                 } else if (hasEqualEntries(tos)) {
-                    b.onfocus = () => {
-                        if(!isWaccessElementFocussed()) {
+                    b.onfocus = function () {
+                        if (!isWaccessElementFocussed()) {
                             gotoFocusable([b.getAttribute(ATT_TO)], shiftKeyDown === false);
                         }
-                    }
+                    };
                 }
             });
-        }   
+        }
     }
-    
+
     function activateButtons(buttons, container) {
-        buttons.forEach((b) => {
+        buttons.forEach(function (b) {
             b.removeAttribute('tabindex');
             validateWaccessButton(b);
-            b.onclick = () => {
+            b.onclick = function () {
                 gotoFocusable([b.getAttribute(ATT_FROM), b.getAttribute(ATT_TO)]);
-            }
+            };
         });
-        if(!(ATT_VAL_DISABLE_AUTO_FORWARD === container.getAttribute(ATT_AUTO_FORWARD))) {
+        if (!(ATT_VAL_DISABLE_AUTO_FORWARD === container.getAttribute(ATT_AUTO_FORWARD))) {
             forward(buttons);
         }
     }
 
     function addKeyListeners() {
-        window.addEventListener('keydown', (evt) => {
-            switch (evt.keyCode) { // we leave it like this for the moment.
+        window.addEventListener('keydown', function (evt) {
+            switch (evt.keyCode) {// we leave it like this for the moment.
                 case 16:
                     shiftKeyDown = true;
                     break;
             }
         });
-        window.addEventListener('keyup', (evt) => {
+        window.addEventListener('keyup', function (evt) {
             switch (evt.keyCode) {
                 case 16:
                     shiftKeyDown = false;
@@ -193,10 +201,10 @@ $waccess = window.$waccess || {};
         addKeyListeners();
     }
 
-    const storage = (() => {
-        const KEY = '$_WACCESS__-__';
+    var storage = function () {
+        var KEY = '$_WACCESS__-__';
 
-        const dataObject = JSON.parse(sessionStorage.getItem(KEY)) || {
+        var dataObject = JSON.parse(sessionStorage.getItem(KEY)) || {
             waccessActivated: false,
             warningsEnabled: false
         };
@@ -205,26 +213,26 @@ $waccess = window.$waccess || {};
             sessionStorage.setItem(KEY, JSON.stringify(dataObject));
         }
 
-        this.activateWaccess = (warningsEnabled) => {
+        this.activateWaccess = function (warningsEnabled) {
             dataObject.waccessActivated = true;
             dataObject.warningsEnabled = warningsEnabled;
             persist();
         };
 
-        this.isWaccessActivated = () => {
+        this.isWaccessActivated = function () {
             return dataObject.waccessActivated;
-        }
-        
-        this.isWarningsEnabled = () => {
+        };
+
+        this.isWarningsEnabled = function () {
             return dataObject.warningsEnabled;
-        }
+        };
 
         return this;
-    })();
+    }();
 
-    window.addEventListener('load', () => {
+    window.addEventListener('load', function () {
         if (!storage.isWaccessActivated()) {
-            const a = document.querySelector(`${WACCESS_ELEMENT} .${WACCESS_ELEMENT_ATT_WELCOME}`);
+            var a = document.querySelector(WACCESS_ELEMENT + ' .' + WACCESS_ELEMENT_ATT_WELCOME);
             a.style.display = 'inline-block';
             a.focus();
             activate(false);
@@ -234,22 +242,21 @@ $waccess = window.$waccess || {};
         }
     });
 
-    self.activateWaccess = (enableWarnings) => {
-        const eW = !enableWarnings ? false : true;
+    self.activateWaccess = function (enableWarnings) {
+        var eW = !enableWarnings ? false : true;
         warningsEnabled = eW;
         storage.activateWaccess(eW);
         activate(true);
-        document.querySelector(`${WACCESS_ELEMENT} .${WACCESS_ELEMENT_ATT_WELCOME}`).style.display = 'none';
-        const confirmationElement = document.querySelector(`${WACCESS_ELEMENT} .${WACCESS_ELEMENT_ATT_ACTIVATED}`);
+        document.querySelector(WACCESS_ELEMENT + ' .' + WACCESS_ELEMENT_ATT_WELCOME).style.display = 'none';
+        var confirmationElement = document.querySelector(WACCESS_ELEMENT + ' .' + WACCESS_ELEMENT_ATT_ACTIVATED);
         confirmationElement.style.display = 'inline-block';
         confirmationElement.focus();
         currentFocussedElement = null;
-    }
+    };
 
-    self.focusElement = (query, force) => {
-        if(force || storage.isWaccessActivated()) {
+    self.focusElement = function (query, force) {
+        if (force || storage.isWaccessActivated()) {
             gotoFocusable([query], true);
         }
-    }
-
+    };
 })($waccess);
