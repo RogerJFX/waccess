@@ -1,0 +1,25 @@
+{
+  "name": "waccess",
+  "version": "1.0.0",
+  "description": "Improving web accessibility.",
+  "main": "index.js",
+  "scripts": {
+    "test": "nyc --reporter=html --reporter=text mocha src/js/**/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/rogerjfx/waccess"
+  },
+  "keywords": [
+    "accessibilty",
+    "html",
+    "web"
+  ],
+  "author": "Roger Hösl",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "jsdom": "^12.2.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0"
+  }
+}

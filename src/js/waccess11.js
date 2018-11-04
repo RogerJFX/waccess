@@ -237,7 +237,7 @@ $waccess = window.$waccess || {};
             a.focus();
             activate(false);
         } else {
-            warningsEnabled = storage.isWarningsEnabled;
+            warningsEnabled = storage.isWarningsEnabled();
             activate(true);
         }
     });
@@ -259,4 +259,6 @@ $waccess = window.$waccess || {};
             gotoFocusable([query], true);
         }
     };
+    
+    console.warn('Your browser is deprecated, and this script as well. Please consider using another browser.');
 })($waccess);

@@ -46,7 +46,7 @@ $waccess = window.$waccess || {};
     let warningsEnabled = false;
 
     function isFocusable(element) {
-        return !!element.getAttribute('tabindex') || () => {
+        return !!element.getAttribute('tabindex') || (() => {
             switch (element.tagName.toLowerCase()) {
                 case 'a':
                 case 'button':
@@ -56,7 +56,7 @@ $waccess = window.$waccess || {};
                     return true;
             }
             return false;
-        }();
+        })();
     }
 
     function findFirstFocusable(element, reverse) {
@@ -221,18 +221,21 @@ $waccess = window.$waccess || {};
 
         return this;
     })();
+    
+    if(window) {
+        window.addEventListener('load', () => {
+            if (!storage.isWaccessActivated()) {
+                const a = document.querySelector(`${WACCESS_ELEMENT} .${WACCESS_ELEMENT_ATT_WELCOME}`);
+                a.style.display = 'inline-block';
+                a.focus();
+                activate(false);
+            } else {
+                warningsEnabled = storage.isWarningsEnabled();
+                activate(true);
+            }
+        });   
+    }
 
-    window.addEventListener('load', () => {
-        if (!storage.isWaccessActivated()) {
-            const a = document.querySelector(`${WACCESS_ELEMENT} .${WACCESS_ELEMENT_ATT_WELCOME}`);
-            a.style.display = 'inline-block';
-            a.focus();
-            activate(false);
-        } else {
-            warningsEnabled = storage.isWarningsEnabled;
-            activate(true);
-        }
-    });
 
     self.activateWaccess = (enableWarnings) => {
         const eW = !enableWarnings ? false : true;
@@ -251,5 +254,7 @@ $waccess = window.$waccess || {};
             gotoFocusable([query], true);
         }
     }
+    
+    self.scanAgain = () => scanDocument4Waccess(true);
 
 })($waccess);
