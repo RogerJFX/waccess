@@ -1,6 +1,6 @@
 {
   "name": "waccess",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Improving web accessibility.",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "github.com/rogerjfx/waccess"
+    "url": "https://github.com/RogerJFX/waccess.git"
   },
   "keywords": [
     "accessibilty",

@@ -4,7 +4,7 @@ export interface IWaccess {
 
   activateWaccess();
 
-  focusElement();
+  focusElement(query: string);
 
   scanAgain();
 
