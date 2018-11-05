@@ -1,6 +1,6 @@
 {
   "name": "waccess",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Improving web accessibility.",
   "main": "index.js",
   "scripts": {

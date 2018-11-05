@@ -47,9 +47,13 @@ won't be asked again within this session.
 
 Note: the module really searches for the anchors with the mentioned classes.
 
-###API
+### API ###
 
-Waccess is all over static. However you might hold a reference.
+Waccess is all over static. Just import it, and it is alive. You should think 
+of it as of a very eager singleton, if you are in doubt. Me too, I am in doubt 
+as well. :D
+
+However you might fetch and hold a (yet useless) reference.
 
 E.g. (TypeScript)
 
@@ -57,20 +61,23 @@ E.g. (TypeScript)
   private waccess: IWaccess = Waccess.init();
 ~~~
 
-**Remember to call Waccess.init() once since it is not completely static.**
-
 All the following methods are "static". So you may call e.g. Wacess.scanAgain() 
 directly.
 
 - init(): IWaccess \
-  Must be called once. Returns a normally useless reference. 
+  Normally completely useless. Returns a reference to the singleton Waccess 
+  instance. Should become deprecated soon. Very soon...
 - activateWaccess(): Void \
-  Activates Waccess.
+  Activates Waccess for the UI.
 - scanAgain(): Void \
   If you have dynamical content, you should force Waccess to scan again.
 - focusElement(query: string, force?: boolean): Void \
-  Declaratively focus an HTML element. \
+  Declaratively focus an HTML element. Usefull, for events like "load" or 
+  any related promises \
   => query: the query for querySelectorAll() \
   => force: if true, action will be performed even with inactive Waccess.
 
+### Notes ### 
 
+1. If dealing with Angular 2++, don't forget to put NO_ERRORS_SCHEMA to schemas 
+in app.module.ts. Otherwise Angular will complain unknown tags.
