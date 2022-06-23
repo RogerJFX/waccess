@@ -18,7 +18,7 @@
   "author": "Roger Hösl",
   "license": "GPL-3.0",
   "devDependencies": {
-    "jsdom": "^12.2.0",
+    "jsdom": "^16.5.0",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0"
   }
